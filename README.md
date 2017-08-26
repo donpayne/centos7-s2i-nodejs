@@ -3,15 +3,17 @@
 This repository contains sources for an [s2i](https://github.com/openshift/source-to-image) builder image, based on CentOS7 and Node.js releases from nodejs.org.  For more information about using these images with OpenShift, please see the
 official [OpenShift Documentation](https://docs.openshift.org/latest/using_images/s2i_images/nodejs.html).
 
-Note: This builder also has a reference to our OracleDB module in our LD_LIBRARY_PATH variable.
-
 ## Versions
 Node.js versions
 
-<!-- versions.start -->
 * **latest**: 8.4.0
 * **8.4.0**
-<!-- versions.end -->
+* **7.10.1**
+* **Boron**: 6.11.2
+* **6.11.2**
+* **5.12.0**
+* **Argon**: 4.8.4
+* **4.8.4**
 
 ## System Dependencies for Building Images
 - Currently using an Enterprise version of Openshift
@@ -28,20 +30,24 @@ application image created from this builder image.
 Name         | Description
 -------------|-------------
 NODE_ENV     | Node.js runtime mode (default: production)
-DOCKER_REPO  | OpenShift internal registry
-DOCKER_PROXY | Corporate proxy
-DOCKER_USER  | Corporate credentials
-DOCKER_PASS  | Corporate credentials
+DOCKER_REPO  | Docker registry
+DOCKER_USER  | Docker credentials
+DOCKER_PASS  | Docker credentials
+PROXY        | Corporate proxy
+PROXY_USER   | Corporate credentials
+PROXY_PASS   | Corporate credentials
 OC_MASTER    | OpenShift master url
-OC_PROJECT   | OpenShift project
+OC_PROJECT   | OpenShift project 
 
 ```sh
 $ export NODE_ENV=production
-$ export DOCKER_REPO=dockerrepo.my.company.com
-$ export DOCKER_PROXY=http://proxy.company.com:0000
+$ export DOCKER_REPO=dockerrepo.company.com
 $ export DOCKER_USER=username
 $ export DOCKER_PASS=password
-$ export OC_MASTER=https://openshiftmaster.my.company.com:0000
+$ export PROXY=http://proxy.company.com:0000
+$ export PROXY_USER=username
+$ export PROXY_PASS=password
+$ export OC_MASTER=https://openshift.company.com:0000
 $ export OC_PROJECT=donpayne
 ```
 
