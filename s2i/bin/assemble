@@ -18,43 +18,43 @@ set -e
 # Link the modules
 #npm link $module_list
 
-echo "---> Installing application source"
-cp -Rf /tmp/src/. ./
+install_application_source() {
+	echo "---> Installing application source..."
+	cp -Rf /tmp/src/. ./
+}
 
-if [ ! -z $HTTP_PROXY ]; then
-	echo "---> Setting npm http proxy to $HTTP_PROXY"
-	npm config set proxy $HTTP_PROXY
-fi
+install_npm_dependencies() {
+	echo "---> Installing npm dependencies..."
+	npm install
+}
 
-if [ ! -z $http_proxy ]; then
-	echo "---> Setting npm http proxy to $http_proxy"
-	npm config set proxy $http_proxy
-fi
+restore_build_artifacts() {
+	if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+		echo "---> Restoring build artifacts..."
+		mv /tmp/artifacts/* ./
+	fi
+}
 
-if [ ! -z $HTTPS_PROXY ]; then
-	echo "---> Setting npm https proxy to $HTTPS_PROXY"
-	npm config set https-proxy $HTTPS_PROXY
-fi
+set_npm_config() {
+	if [ ! -z $2 ]; then
+		echo "---> Setting npm $1 to $2"
+		npm config set $1 $2
+	fi
+}
 
-if [ ! -z $https_proxy ]; then
-	echo "---> Setting npm https proxy to $https_proxy"
-	npm config set https-proxy $https_proxy
-fi
+main() {
+	set_npm_config "proxy" $http_proxy
+	set_npm_config "proxy" $HTTP_PROXY
+	set_npm_config "https-proxy" $https_proxy
+	set_npm_config "https-proxy" $HTTPS_PROXY
+	set_npm_config "registry" $NPM_MIRROR
 
-# Change the npm registry mirror if provided
-if [ ! -z "$NPM_MIRROR" ]; then
-	echo "---> Setting the npm package mirror to $NPM_MIRROR"
-	npm config set registry $NPM_MIRROR
-fi
+	install_application_source
+	restore_build_artifacts
+	install_npm_dependencies
+)
 
-if [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
-  echo "---> Restoring build artifacts..."
-  mv /tmp/artifacts/* ./
-fi
-
-echo "---> Building your Node application from source"
-echo "---> Using 'npm install'"
-npm install -s
+main
 
 # Fix source directory permissions
 # fix-permissions ./
