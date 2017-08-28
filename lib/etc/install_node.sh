@@ -15,6 +15,16 @@ GPG_KEYS=(
     56730D5401028683275BD23C23EFEFE93C4CFFFE
 )
 
+main() {
+    set_proxy
+    download_node_gpg_keys
+    download_node_binary_shasum
+    validate_unpack_binary
+    install_latest_npm
+    set_permissions
+    cleanup
+}
+
 set_proxy() {
     if [ ! -z $HTTP_PROXY ]; then
         KEYSERVER_PROXY="--keyserver-options http-proxy=${HTTP_PROXY%%://*}://${PROXY_USER}:${PROXY_PASS}@${HTTP_PROXY##*://}";
@@ -30,11 +40,8 @@ download_node_gpg_keys() {
     done
 }
 
-download_node_binary() {
+download_node_binary_shasum() {
     curl -O -sSL $CURL_PROXY https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz
-}
-
-download_node_shasum() {
     curl -O -sSL $CURL_PROXY https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt.asc
 }
 
@@ -64,17 +71,6 @@ cleanup() {
         /usr/local/lib/node_modules/npm/doc \
         /usr/local/lib/node_modules/npm/html \
         /tmp/*
-}
-
-main() {
-    set_proxy
-    download_node_gpg_keys
-    download_node_binary
-    download_node_shasum
-    validate_unpack_binary
-    install_latest_npm
-    set_permissions
-    cleanup
 }
 
 main
